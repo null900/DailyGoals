@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#4F46E5" />
+  <title>DailyGoals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/components.css" />
+</head>
+<body>
+
+  <div class="phone-frame" id="phoneFrame">
+
+    <!-- ================= HEADER ================= -->
+    <header class="app-header">
+      <div class="header-top">
+        <div class="user-info">
+          <button class="avatar" id="avatarBtn" title="Cambiar avatar" aria-label="Cambiar avatar">
+            <i class="fa-solid fa-bullseye" id="avatarIcon"></i>
+          </button>
+          <div class="user-meta">
+            <span class="user-greeting">¡Hola, Campeón!</span>
+            <span class="user-level">Nivel <span id="headerLevel">1</span></span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="icon-btn" id="menuToggle" title="Menú" aria-label="Menú">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <button class="icon-btn" id="themeToggle" title="Cambiar tema" aria-label="Cambiar tema">
+            <i class="fa-solid fa-moon" id="themeIcon"></i>
+          </button>
+          <div class="streak-badge" title="Racha de días">
+            <i class="fa-solid fa-fire streak-fire"></i>
+            <span id="headerStreak">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="xp-container">
+        <div class="xp-labels">
+          <span><i class="fa-solid fa-bolt"></i> XP</span>
+          <span id="headerXpText">0 / 100</span>
+        </div>
+        <div class="xp-bar-track">
+          <div class="xp-bar-fill" id="headerXpBar" style="width:0%"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ================= MENÚ ================= -->
+    <div class="menu-dropdown" id="menuDropdown" hidden>
+      <button class="menu-item" data-action="notifications">
+        <i class="fa-solid fa-bell"></i>
+        <span>Notificaciones</span>
+        <span class="menu-badge" id="notifState">Off</span>
+      </button>
+      <button class="menu-item" data-action="export">
+        <i class="fa-solid fa-download"></i> Exportar datos
+      </button>
+      <button class="menu-item" data-action="import">
+        <i class="fa-solid fa-upload"></i> Importar datos
+      </button>
+      <button class="menu-item" data-action="about">
+        <i class="fa-solid fa-circle-info"></i> Acerca de
+      </button>
+      <button class="menu-item danger" data-action="reset">
+        <i class="fa-solid fa-trash"></i> Resetear todo
+      </button>
+    </div>
+
+    <!-- ================= VISTAS ================= -->
+    <main class="views-container" id="viewsContainer">
+
+      <!-- ===== HÁBITOS ===== -->
+      <section class="view active" id="view-habits">
+        <div class="view-header">
+          <h1 class="view-title">Hábitos de Hoy</h1>
+          <p class="view-subtitle" id="todayDate"></p>
+        </div>
+
+        <div class="filters-bar" id="filtersBar">
+          <button class="filter-chip active" data-filter="all">
+            <i class="fa-solid fa-layer-group"></i> Todos
+          </button>
+          <button class="filter-chip" data-filter="Salud">
+            <i class="fa-solid fa-heart-pulse"></i> Salud
+          </button>
+          <button class="filter-chip" data-filter="Estudio">
+            <i class="fa-solid fa-book"></i> Estudio
+          </button>
+          <button class="filter-chip" data-filter="Productividad">
+            <i class="fa-solid fa-bolt"></i> Productividad
+          </button>
+        </div>
+
+        <div class="day-progress-card">
+          <div class="day-progress-header">
+            <span><i class="fa-solid fa-chart-line"></i> Progreso del día</span>
+            <strong id="globalProgressText">0%</strong>
+          </div>
+          <div class="day-progress-track">
+            <div class="day-progress-fill" id="globalProgressBar" style="width:0%"></div>
+          </div>
+        </div>
+
+        <div class="habits-list" id="habitsList"></div>
+
+        <div class="empty-state" id="emptyState" hidden>
+          <div class="empty-icon"><i class="fa-solid fa-seedling"></i></div>
+          <p class="empty-title">Aún no tienes hábitos</p>
+          <p class="empty-text">Crea tu primer hábito y empieza a subir de nivel</p>
+        </div>
+      </section>
+
+      <!-- ===== ESTADÍSTICAS ===== -->
+      <section class="view" id="view-stats">
+        <div class="view-header">
+          <h1 class="view-title">Estadísticas</h1>
+          <p class="view-subtitle">Tu progreso semanal</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <i class="fa-solid fa-circle-check stat-icon"></i>
+            <span class="stat-value" id="statCompletedToday">0</span>
+            <span class="stat-label">Hoy completados</span>
+          </div>
+          <div class="stat-card">
+            <i class="fa-solid fa-bolt stat-icon"></i>
+            <span class="stat-value" id="statTotalXp">0</span>
+            <span class="stat-label">XP total</span>
+          </div>
+          <div class="stat-card">
+            <i class="fa-solid fa-fire stat-icon"></i>
+            <span class="stat-value" id="statBestStreak">0</span>
+            <span class="stat-label">Mejor racha</span>
+          </div>
+          <div class="stat-card">
+            <i class="fa-solid fa-list-check stat-icon"></i>
+            <span class="stat-value" id="statTotalHabits">0</span>
+            <span class="stat-label">Hábitos activos</span>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <h3 class="chart-title">
+            <i class="fa-solid fa-chart-column"></i> Cumplimiento semanal
+          </h3>
+          <div class="chart-bars" id="weeklyChart"></div>
+        </div>
+
+        <div class="chart-card">
+          <h3 class="chart-title">
+            <i class="fa-solid fa-medal"></i> Insignias desbloqueadas
+          </h3>
+          <div class="badges-grid" id="badgesGrid"></div>
+        </div>
+      </section>
+
+      <!-- ===== HISTORIAL ===== -->
+      <section class="view" id="view-history">
+        <div class="view-header">
+          <h1 class="view-title">Historial</h1>
+          <p class="view-subtitle">Calendario de cumplimiento</p>
+        </div>
+
+        <div class="chart-card">
+          <div class="calendar-nav">
+            <button class="icon-btn" id="calPrev" aria-label="Mes anterior">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <h3 class="calendar-title" id="calendarTitle">Mes</h3>
+            <button class="icon-btn" id="calNext" aria-label="Mes siguiente">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+          <div class="calendar-grid" id="calendarGrid" role="grid" aria-label="Calendario"></div>
+          <div class="calendar-legend">
+            <span><span class="legend-dot" style="background:var(--bg-app)"></span>Sin datos</span>
+            <span><span class="legend-dot" style="background:rgba(79,70,229,0.25)"></span>Bajo</span>
+            <span><span class="legend-dot" style="background:rgba(79,70,229,0.55)"></span>Medio</span>
+            <span><span class="legend-dot" style="background:var(--primary)"></span>Alto</span>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <h3 class="chart-title">
+            <i class="fa-solid fa-clock-rotate-left"></i> Últimos 7 días
+          </h3>
+          <div class="history-list" id="historyList"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FAB -->
+    <button class="fab" id="fabAddHabit" title="Crear hábito" aria-label="Crear nuevo hábito">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+
+    <!-- ================= BOTTOM NAV ================= -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-view="habits">
+        <i class="fa-solid fa-list-check nav-icon"></i>
+        <span class="nav-label">Hábitos</span>
+      </button>
+      <button class="nav-btn" data-view="stats">
+        <i class="fa-solid fa-chart-simple nav-icon"></i>
+        <span class="nav-label">Stats</span>
+      </button>
+      <button class="nav-btn" data-view="history">
+        <i class="fa-solid fa-calendar-days nav-icon"></i>
+        <span class="nav-label">Historial</span>
+      </button>
+    </nav>
+
+    <!-- ================= MODAL CREAR / EDITAR ================= -->
+    <div class="modal-overlay" id="habitModal" hidden>
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title" id="habitModalTitle">Nuevo Hábito</h2>
+          <button class="modal-close" id="modalClose" aria-label="Cerrar">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <form id="habitForm" class="modal-body">
+          <input type="hidden" id="habitId" value="" />
+
+          <label class="field">
+            <span class="field-label">Título del hábito</span>
+            <input type="text" id="habitTitle" class="input" placeholder="Ej. Beber 2L de agua" required maxlength="40" />
+          </label>
+
+          <label class="field">
+            <span class="field-label">Categoría</span>
+            <select id="habitCategory" class="input">
+              <option value="Salud">🩺 Salud</option>
+              <option value="Estudio">📚 Estudio</option>
+              <option value="Productividad">⚡ Productividad</option>
+            </select>
+          </label>
+
+          <div class="field">
+            <span class="field-label">Tipo de medición</span>
+            <div class="chip-group" id="measureTypeGroup">
+              <button type="button" class="chip active" data-type="binary">
+                <i class="fa-solid fa-circle-check"></i> Binario
+              </button>
+              <button type="button" class="chip" data-type="counter">
+                <i class="fa-solid fa-hashtag"></i> Contador
+              </button>
+              <button type="button" class="chip" data-type="timer">
+                <i class="fa-solid fa-stopwatch"></i> Temporizador
+              </button>
+            </div>
+          </div>
+
+          <div class="field conditional" id="counterFields" hidden>
+            <label class="field">
+              <span class="field-label">Meta total</span>
+              <input type="number" id="habitGoal" class="input" value="2500" min="1" />
+            </label>
+            <label class="field">
+              <span class="field-label">Incremento por paso</span>
+              <input type="number" id="habitStep" class="input" value="250" min="1" />
+            </label>
+            <label class="field">
+              <span class="field-label">Unidad</span>
+              <input type="text" id="habitUnit" class="input" value="ml" maxlength="8" />
+            </label>
+          </div>
+
+          <div class="field conditional" id="timerFields" hidden>
+            <label class="field">
+              <span class="field-label">Duración (minutos)</span>
+              <input type="number" id="habitMinutes" class="input" value="30" min="1" max="240" />
+            </label>
+          </div>
+
+          <div class="field">
+            <span class="field-label">Dificultad</span>
+            <div class="chip-group" id="difficultyGroup">
+              <button type="button" class="chip" data-diff="easy">
+                <i class="fa-solid fa-face-smile"></i> Fácil · 10 XP
+              </button>
+              <button type="button" class="chip active" data-diff="medium">
+                <i class="fa-solid fa-dumbbell"></i> Medio · 20 XP
+              </button>
+              <button type="button" class="chip" data-diff="hard">
+                <i class="fa-solid fa-fire"></i> Difícil · 35 XP
+              </button>
+            </div>
+          </div>
+
+          <!-- NUEVO: Recordatorio -->
+          <div class="field reminder-field">
+            <span class="field-label">
+              <i class="fa-solid fa-clock"></i> Recordatorio (opcional)
+            </span>
+            <div class="reminder-row">
+              <input type="time" id="habitTime" class="input time-input" />
+              <button type="button" class="reminder-clear" id="clearTime" title="Quitar hora">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <span class="field-hint">Recibirás una notificación a esta hora</span>
+          </div>
+
+          <button type="submit" class="btn-primary" id="habitSubmitBtn">
+            <i class="fa-solid fa-plus"></i> Crear Hábito
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ================= MODAL AVATAR ================= -->
+    <div class="modal-overlay" id="avatarModal" hidden>
+      <div class="modal avatar-modal">
+        <div class="modal-header">
+          <h2 class="modal-title">Elige tu avatar</h2>
+          <button class="modal-close" id="avatarModalClose" aria-label="Cerrar">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="avatar-grid" id="avatarGrid"></div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL CELEBRACIÓN ================= -->
+    <div class="modal-overlay" id="celebrationModal" hidden>
+      <div class="modal celebration-modal">
+        <div class="celebration-emoji" id="celebrationEmoji">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+        <h2 class="celebration-title" id="celebrationTitle">¡Hábito Completado!</h2>
+        <p class="celebration-text" id="celebrationText">+20 XP ganados</p>
+        <button class="btn-primary" id="celebrationClose">¡Genial!</button>
+      </div>
+    </div>
+
+    <!-- Toast y archivo import -->
+    <div class="toast-container" id="toastContainer"></div>
+    <input type="file" id="importFile" accept="application/json" hidden />
+
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/gamification.js"></script>
+  <script src="js/habits.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
